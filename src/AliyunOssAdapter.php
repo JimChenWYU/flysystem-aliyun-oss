@@ -8,14 +8,13 @@
 
 namespace JimChen\Flysystem\AliyunOss;
 
+use OSS\OssClient;
 use GuzzleHttp\Psr7;
-use League\Flysystem\Adapter\AbstractAdapter;
-use League\Flysystem\Adapter\CanOverwriteFiles;
-use League\Flysystem\Config;
 use League\Flysystem\Util;
 use OSS\Core\OssException;
-use OSS\Http\ResponseCore;
-use OSS\OssClient;
+use League\Flysystem\Config;
+use League\Flysystem\Adapter\AbstractAdapter;
+use League\Flysystem\Adapter\CanOverwriteFiles;
 
 class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
 {

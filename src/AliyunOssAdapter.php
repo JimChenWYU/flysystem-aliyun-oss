@@ -323,13 +323,20 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
     {
         $prefix = $this->applyPathPrefix(rtrim($directory, '/') . '/');
 
+        $options = [
+            OssClient::OSS_PREFIX    => ltrim($prefix, '/'),
+            OssClient::OSS_MARKER    => '',
+            OssClient::OSS_MAX_KEYS  => 100,
+        ];
+
+        if ($recursive) {
+            $options[OssClient::OSS_DELIMITER] = '';
+        } else {
+            $options[OssClient::OSS_DELIMITER] = '/';
+        }
+
         try {
-            list($response, $path) = $this->retrieveListing([
-                OssClient::OSS_PREFIX    => $prefix,
-                OssClient::OSS_DELIMITER => $recursive ? '' : '/',
-                OssClient::OSS_MARKER    => '',
-                OssClient::OSS_MAX_KEYS  => 100,
-            ]);
+            list($response, $path) = $this->retrieveListing($options);
         } catch (OssException $e) {
             return false;
         }

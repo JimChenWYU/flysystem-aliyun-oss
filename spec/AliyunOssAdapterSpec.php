@@ -95,6 +95,55 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $this->listContents('/', false);
     }
 
+    public function it_should_get_list_contents_with_recursive()
+    {
+        $result = new ObjectListInfo(
+            $this->bucket,
+            self::PATH_PREFIX . '/',
+            '',
+            OssUtil::decodeKey('', ''),
+            100,
+            '/',
+            '',
+            [
+                new ObjectInfo(
+                    'fun/movie/001.avi',
+                    '2012-02-24T08:43:07.000Z',
+                    '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
+                    'Normal',
+                    344606,
+                    'Standard'),
+                new ObjectInfo(
+                    'fun/movie/007.avi',
+                    '2012-02-24T08:43:27.000Z',
+                    '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
+                    'Normal',
+                    344606,
+                    'Standard'),
+                new ObjectInfo(
+                    'fun/movie/007.avi',
+                    '2012-02-24T08:43:27.000Z',
+                    '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
+                    'Normal',
+                    344606,
+                    'Standard'),
+            ],
+            [
+                new PrefixInfo(
+                    'fun/movie/'
+                ),
+            ]
+        );
+        $this->client->listObjects($this->bucket, [
+            OssClient::OSS_PREFIX    => self::PATH_PREFIX . '/',
+            OssClient::OSS_DELIMITER => '',
+            OssClient::OSS_MARKER    => '',
+            OssClient::OSS_MAX_KEYS  => 100,
+        ])->shouldBeCalled()->willReturn($result);
+
+        $this->listContents('/', true);
+    }
+
     public function it_should_get_list_contents_return_false()
     {
         $this->client->listObjects($this->bucket, [

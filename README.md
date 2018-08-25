@@ -21,7 +21,7 @@ include __DIR__ . '/vendor/autoload.php';
 $client = new OssClient([
     'your-access-key-id',
     'your-access-key-secret',
-    'your-bucket',
+    'your-bucket-name',
     'your-endpoint'
 ]);
 

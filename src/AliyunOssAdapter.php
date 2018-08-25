@@ -335,13 +335,13 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
         }
 
         try {
-            list($response, $path) = $this->retrieveListing($options);
+            $listing = $this->retrieveListing($options);
         } catch (OssException $e) {
             return false;
         }
 
         $normalizer = [$this, 'normalizeResponse'];
-        $normalized = array_map($normalizer, $response, $path);
+        $normalized = array_map($normalizer, $listing);
 
         return Util::emulateDirectories($normalized);
     }
@@ -355,35 +355,26 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
     protected function retrieveListing(array $options)
     {
         $result = $this->ossClient->listObjects($this->bucket, $options);
-        $listing = [
-            'response' => [],
-            'path'     => [],
-        ];
+        $listing = [];
 
         foreach ($result->getObjectList() as $object) {
-            $listing['response'][] = [
-                'object' => [
-                    'key'           => $object->getKey(),
-                    'last_modified' => $object->getLastModified(),
-                    'etag'          => $object->getETag(),
-                    'type'          => $object->getType(),
-                    'size'          => $object->getSize(),
-                    'storage_class' => $object->getStorageClass(),
-                ],
+            $listing[] = [
+                'key'           => $object->getKey(),
+                'last_modified' => $object->getLastModified(),
+                'etag'          => $object->getETag(),
+                'type'          => $object->getType(),
+                'size'          => $object->getSize(),
+                'storage_class' => $object->getStorageClass(),
             ];
-            $listing['path'][] = $object->getKey();
         }
 
         foreach ($result->getPrefixList() as $object) {
-            $listing['response'][] = [
-                'object' => [
-                    'prefix' => $object->getPrefix(),
-                ],
+            $listing[] = [
+                'prefix' => $object->getPrefix(),
             ];
-            $listing['path'][] = $object->getPrefix();
         }
 
-        return array_values($listing);
+        return $listing;
     }
 
     /**
@@ -432,7 +423,8 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
     public function getMimetype($path)
     {
         if ($metaData = $this->getMetadata($path)) {
-            $contentType = array_key_exists('content_type', $metaData) ? $metaData['content_type'] : $metaData['info']['content_type'];
+            $contentType = array_key_exists('content_type',
+                $metaData) ? $metaData['content_type'] : $metaData['info']['content_type'];
 
             return [
                 'mimetype' => $contentType,
@@ -577,7 +569,9 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
     protected function normalizeResponse(array $response, $path = null)
     {
         $result = [
-            'path' => $path ?: $this->removePathPrefix($path),
+            'path' => $path ?: $this->removePathPrefix(
+                isset($response['key']) ? $response['key'] : $response['prefix']
+            ),
         ];
 
         $result = array_merge($result, Util::pathinfo($result['path']));

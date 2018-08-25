@@ -1,0 +1,35 @@
+{
+    "name": "jimchen/flysystem-aliyun-oss",
+    "description": "Flysystem adapter for the Aliyun Oss SDK v2.*",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "JimChen",
+            "email": "18219111672@163.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "aliyuncs/oss-sdk-php": "^2.3",
+        "league/flysystem": "^1.0",
+        "guzzlehttp/psr7": "^1.4"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^2.0.0",
+        "henrikbjorn/phpspec-code-coverage": "~1.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "JimChen\\Flysystem\\AliyunOss\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JimChen\\Flysystem\\AliyunOss\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}

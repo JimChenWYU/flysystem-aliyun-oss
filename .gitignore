@@ -1,0 +1,13 @@
+*.DS_Store
+/bin
+/vendor
+/coverage
+coverage.xml
+sftp-config.json
+composer.lock
+.subsplit
+.php_cs.cache
+/example
+
+# PHPStorm
+.idea

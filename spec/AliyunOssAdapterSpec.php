@@ -58,22 +58,8 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             '',
             [
                 new ObjectInfo(
-                    'fun/movie/001.avi',
+                    self::PATH_PREFIX . '/fun/movie/001.avi',
                     '2012-02-24T08:43:07.000Z',
-                    '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
-                    'Normal',
-                    344606,
-                    'Standard'),
-                new ObjectInfo(
-                    'fun/movie/007.avi',
-                    '2012-02-24T08:43:27.000Z',
-                    '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
-                    'Normal',
-                    344606,
-                    'Standard'),
-                new ObjectInfo(
-                    'fun/movie/007.avi',
-                    '2012-02-24T08:43:27.000Z',
                     '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
                     'Normal',
                     344606,
@@ -81,7 +67,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             ],
             [
                 new PrefixInfo(
-                    'fun/movie/'
+                    self::PATH_PREFIX . '/fun/movie/'
                 ),
             ]
         );
@@ -107,22 +93,8 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             '',
             [
                 new ObjectInfo(
-                    'fun/movie/001.avi',
+                    self::PATH_PREFIX . '/fun/movie/001.avi',
                     '2012-02-24T08:43:07.000Z',
-                    '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
-                    'Normal',
-                    344606,
-                    'Standard'),
-                new ObjectInfo(
-                    'fun/movie/007.avi',
-                    '2012-02-24T08:43:27.000Z',
-                    '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
-                    'Normal',
-                    344606,
-                    'Standard'),
-                new ObjectInfo(
-                    'fun/movie/007.avi',
-                    '2012-02-24T08:43:27.000Z',
                     '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
                     'Normal',
                     344606,
@@ -130,7 +102,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             ],
             [
                 new PrefixInfo(
-                    'fun/movie/'
+                    self::PATH_PREFIX . '/fun/movie/'
                 ),
             ]
         );

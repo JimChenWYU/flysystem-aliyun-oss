@@ -323,9 +323,9 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
         $prefix = $this->applyPathPrefix(rtrim($directory, '/') . '/');
 
         $options = [
-            OssClient::OSS_PREFIX    => ltrim($prefix, '/'),
-            OssClient::OSS_MARKER    => '',
-            OssClient::OSS_MAX_KEYS  => 100,
+            OssClient::OSS_PREFIX   => ltrim($prefix, '/'),
+            OssClient::OSS_MARKER   => '',
+            OssClient::OSS_MAX_KEYS => 100,
         ];
 
         if ($recursive) {
@@ -511,9 +511,9 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
     /**
      * Upload an object.
      *
-     * @param string $path
-     * @param string $body
-     * @param Config $config
+     * @param string          $path
+     * @param string|resource $body
+     * @param Config          $config
      *
      * @return array|false
      * @throws \InvalidArgumentException

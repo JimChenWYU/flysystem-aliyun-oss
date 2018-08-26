@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * This file is part of the jimchen/flysystem-aliyun-oss.
+ *
+ * (c) JimChen <18219111672@163.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
+ */
+
 namespace spec\JimChen\Flysystem\AliyunOss;
 
 use JimChen\Flysystem\AliyunOss\AliyunOssAdapter;
@@ -20,7 +28,9 @@ class AliyunOssAdapterSpec extends ObjectBehavior
      * @var \OSS\OssClient
      */
     private $client;
+
     private $bucket;
+
     const PATH_PREFIX = 'path-prefix';
 
     /**
@@ -38,7 +48,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $key = 'dir/name/fun.avi';
         $this->client->putObject(
             $this->bucket,
-            self::PATH_PREFIX . '/' . $key,
+            self::PATH_PREFIX.'/'.$key,
             'contents',
             Argument::type('array')
         )->willThrow(returnOssException('RequestTimeout'));
@@ -50,7 +60,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $result = new ObjectListInfo(
             $this->bucket,
-            self::PATH_PREFIX . '/',
+            self::PATH_PREFIX.'/',
             '',
             OssUtil::decodeKey('', ''),
             100,
@@ -58,7 +68,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             '',
             [
                 new ObjectInfo(
-                    self::PATH_PREFIX . '/fun/movie/001.avi',
+                    self::PATH_PREFIX.'/fun/movie/001.avi',
                     '2012-02-24T08:43:07.000Z',
                     '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
                     'Normal',
@@ -67,15 +77,15 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             ],
             [
                 new PrefixInfo(
-                    self::PATH_PREFIX . '/fun/movie/'
+                    self::PATH_PREFIX.'/fun/movie/'
                 ),
             ]
         );
         $this->client->listObjects($this->bucket, [
-            OssClient::OSS_PREFIX    => self::PATH_PREFIX . '/',
+            OssClient::OSS_PREFIX => self::PATH_PREFIX.'/',
             OssClient::OSS_DELIMITER => '/',
-            OssClient::OSS_MARKER    => '',
-            OssClient::OSS_MAX_KEYS  => 100,
+            OssClient::OSS_MARKER => '',
+            OssClient::OSS_MAX_KEYS => 100,
         ])->shouldBeCalled()->willReturn($result);
 
         $this->listContents('/', false);
@@ -85,7 +95,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $result = new ObjectListInfo(
             $this->bucket,
-            self::PATH_PREFIX . '/',
+            self::PATH_PREFIX.'/',
             '',
             OssUtil::decodeKey('', ''),
             100,
@@ -93,7 +103,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             '',
             [
                 new ObjectInfo(
-                    self::PATH_PREFIX . '/fun/movie/001.avi',
+                    self::PATH_PREFIX.'/fun/movie/001.avi',
                     '2012-02-24T08:43:07.000Z',
                     '&quot;5B3C1A2E053D763E1B002CC607C5A0FE&quot;',
                     'Normal',
@@ -102,15 +112,15 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             ],
             [
                 new PrefixInfo(
-                    self::PATH_PREFIX . '/fun/movie/'
+                    self::PATH_PREFIX.'/fun/movie/'
                 ),
             ]
         );
         $this->client->listObjects($this->bucket, [
-            OssClient::OSS_PREFIX    => self::PATH_PREFIX . '/',
+            OssClient::OSS_PREFIX => self::PATH_PREFIX.'/',
             OssClient::OSS_DELIMITER => '',
-            OssClient::OSS_MARKER    => '',
-            OssClient::OSS_MAX_KEYS  => 100,
+            OssClient::OSS_MARKER => '',
+            OssClient::OSS_MAX_KEYS => 100,
         ])->shouldBeCalled()->willReturn($result);
 
         $this->listContents('/', true);
@@ -119,10 +129,10 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     public function it_should_get_list_contents_return_false()
     {
         $this->client->listObjects($this->bucket, [
-            OssClient::OSS_PREFIX    => self::PATH_PREFIX . '/',
+            OssClient::OSS_PREFIX => self::PATH_PREFIX.'/',
             OssClient::OSS_DELIMITER => '/',
-            OssClient::OSS_MARKER    => '',
-            OssClient::OSS_MAX_KEYS  => 100,
+            OssClient::OSS_MARKER => '',
+            OssClient::OSS_MAX_KEYS => 100,
         ])->willThrow(returnOssException('RequestTimeout'));
 
         $this->listContents('/', false)->shouldBe(false);
@@ -130,7 +140,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
 
     public function it_should_add_path_prefix_without_left_directory_separator()
     {
-        $this->applyPathPrefix('/path')->shouldBe(self::PATH_PREFIX . '/path');
+        $this->applyPathPrefix('/path')->shouldBe(self::PATH_PREFIX.'/path');
     }
 
     public function it_should_set_path_prefix_without_left_directory_separator()
@@ -177,7 +187,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $key = 'key.txt';
         $this->client->putObject(
             $this->bucket,
-            self::PATH_PREFIX . '/' . $key,
+            self::PATH_PREFIX.'/'.$key,
             \GuzzleHttp\Psr7\stream_for(tmpfile()),
             Argument::type('array')
         )->willReturn(['body' => '']);
@@ -191,7 +201,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $key = 'key.txt';
         $this->client->putObject(
             $this->bucket,
-            self::PATH_PREFIX . '/' . $key,
+            self::PATH_PREFIX.'/'.$key,
             \GuzzleHttp\Psr7\stream_for(tmpfile()),
             Argument::type('array')
         )->willReturn(['body' => '']);
@@ -202,7 +212,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     public function it_should_delete_files()
     {
         $key = 'key.txt';
-        $this->client->deleteObject($this->bucket, self::PATH_PREFIX . '/' . $key,
+        $this->client->deleteObject($this->bucket, self::PATH_PREFIX.'/'.$key,
             Argument::type('array'))->shouldBeCalled();
 
         $this->make_it_404_on_has_object($key);
@@ -239,7 +249,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     public function it_should_return_when_trying_to_read_an_non_existing_file()
     {
         $key = 'key.txt';
-        $this->client->getObject($this->bucket, self::PATH_PREFIX . '/' . $key)
+        $this->client->getObject($this->bucket, self::PATH_PREFIX.'/'.$key)
             ->willThrow(returnOssException('NoSuchKey', 404));
 
         $this->read($key)->shouldBe(false);
@@ -262,7 +272,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $this->make_it_retrieve_file_metadata('getMimetype');
         $this->make_it_retrieve_file_metadata_return_false('getMimetype');
     }
-    
+
     public function it_should_retrieve_the_size_of_a_file()
     {
         $this->make_it_retrieve_file_metadata('getSize');
@@ -272,7 +282,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     public function it_should_return_true_when_object_exists()
     {
         $key = 'key.txt';
-        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX . '/' . $key,
+        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX.'/'.$key,
             Argument::type('array'))->willReturn(true);
 
         $this->has($key)->shouldBe(true);
@@ -283,7 +293,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $key = 'directory';
         $result = new ObjectListInfo(
             $this->bucket,
-            self::PATH_PREFIX . '/',
+            self::PATH_PREFIX.'/',
             '',
             OssUtil::decodeKey('', ''),
             1,
@@ -305,10 +315,10 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             ]
         );
 
-        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX . '/' . $key,
+        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX.'/'.$key,
             Argument::type('array'))->willReturn(false);
         $this->client->listObjects($this->bucket, [
-            OssClient::OSS_PREFIX   => self::PATH_PREFIX . '/' . $key . '/',
+            OssClient::OSS_PREFIX => self::PATH_PREFIX.'/'.$key.'/',
             OssClient::OSS_MAX_KEYS => 1,
         ])->willReturn($result);
 
@@ -319,11 +329,11 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $key = 'directory';
 
-        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX . '/' . $key, Argument::type('array'))
+        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX.'/'.$key, Argument::type('array'))
             ->willReturn(false);
 
         $this->client->listObjects($this->bucket, [
-            OssClient::OSS_PREFIX   => self::PATH_PREFIX . '/' . $key . '/',
+            OssClient::OSS_PREFIX => self::PATH_PREFIX.'/'.$key.'/',
             OssClient::OSS_MAX_KEYS => 1,
         ])->willThrow(returnOssException('', 403));
 
@@ -335,17 +345,17 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $key = 'directory';
 
         $exception = returnOssException('', 500);
-        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX . '/' . $key, Argument::type('array'))
+        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX.'/'.$key, Argument::type('array'))
             ->willReturn(false);
 
         $this->client->listObjects($this->bucket, [
-            OssClient::OSS_PREFIX   => self::PATH_PREFIX . '/' . $key . '/',
+            OssClient::OSS_PREFIX => self::PATH_PREFIX.'/'.$key.'/',
             OssClient::OSS_MAX_KEYS => 1,
         ])->willThrow($exception);
 
         $this->shouldThrow($exception)->duringHas($key);
     }
-    
+
     public function it_should_copy_files()
     {
         $sourceKey = 'key.txt';
@@ -368,7 +378,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $path = 'dir/name';
         $this->client->createObjectDir(
             $this->bucket,
-            self::PATH_PREFIX . '/' . $path,
+            self::PATH_PREFIX.'/'.$path,
             Argument::type('array')
         )->willReturn([
             'body' => 'body',
@@ -383,7 +393,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $path = 'dir/name';
         $this->client->createObjectDir(
             $this->bucket,
-            self::PATH_PREFIX . '/' . $path,
+            self::PATH_PREFIX.'/'.$path,
             Argument::type('array')
         )->willThrow(returnOssException('RequestTimeout'));
 
@@ -423,7 +433,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $key = 'haha.txt';
         $exception = returnOssException('', 500);
-        $this->client->getObjectMeta($this->bucket, self::PATH_PREFIX . '/' . $key)
+        $this->client->getObjectMeta($this->bucket, self::PATH_PREFIX.'/'.$key)
             ->willThrow($exception);
 
         $this->shouldThrow($exception)->duringGetMetadata($key);
@@ -460,7 +470,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     public function it_should_set_the_visibility_of_a_file_to_public()
     {
         $key = 'key.txt';
-        $this->client->putObjectAcl($this->bucket, self::PATH_PREFIX . '/' . $key, 'public-read')
+        $this->client->putObjectAcl($this->bucket, self::PATH_PREFIX.'/'.$key, 'public-read')
             ->shouldBeCalled();
 
         $this->setVisibility($key, 'public-read')->shouldHaveValue('public-read');
@@ -469,7 +479,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     public function it_should_set_the_visibility_of_a_file_to_private()
     {
         $key = 'key.txt';
-        $this->client->putObjectAcl($this->bucket, self::PATH_PREFIX . '/' . $key, 'private')
+        $this->client->putObjectAcl($this->bucket, self::PATH_PREFIX.'/'.$key, 'private')
             ->shouldBeCalled();
 
         $this->setVisibility($key, 'private')->shouldHaveValue('private');
@@ -478,7 +488,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     public function it_should_return_false_when_failing_to_set_visibility()
     {
         $key = 'key.txt';
-        $this->client->putObjectAcl($this->bucket, self::PATH_PREFIX . '/' . $key, 'private')
+        $this->client->putObjectAcl($this->bucket, self::PATH_PREFIX.'/'.$key, 'private')
             ->willThrow(returnOssException('RequestTimeout'));
 
         $this->setVisibility($key, 'private')->shouldBe(false);
@@ -490,7 +500,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $key = 'key.txt';
         $this->client->putObject(
             $this->bucket,
-            self::PATH_PREFIX . '/' . $key,
+            self::PATH_PREFIX.'/'.$key,
             $body,
             Argument::type('array')
         )->willReturn(['body' => '']);
@@ -502,9 +512,9 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $this->client->copyObject(
             $this->bucket,
-            self::PATH_PREFIX . '/' . $sourceKey,
+            self::PATH_PREFIX.'/'.$sourceKey,
             $this->bucket,
-            self::PATH_PREFIX . '/' . $key,
+            self::PATH_PREFIX.'/'.$key,
             Argument::type('array')
         )->willReturn(true);
     }
@@ -513,7 +523,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $this->client->deleteObject(
             $this->bucket,
-            self::PATH_PREFIX . '/' . $sourceKey,
+            self::PATH_PREFIX.'/'.$sourceKey,
             Argument::type('array'))->shouldBeCalled();
     }
 
@@ -521,22 +531,22 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $this->client->copyObject(
             $this->bucket,
-            self::PATH_PREFIX . '/' . $sourceKey,
+            self::PATH_PREFIX.'/'.$sourceKey,
             $this->bucket,
-            self::PATH_PREFIX . '/' . $key,
+            self::PATH_PREFIX.'/'.$key,
             Argument::type('array')
         )->willThrow(returnOssException('AccessDenied', 403));
     }
 
     private function make_it_retrieve_raw_visibility($key, $visibility)
     {
-        $this->client->getObjectAcl($this->bucket, self::PATH_PREFIX . '/' . $key)
+        $this->client->getObjectAcl($this->bucket, self::PATH_PREFIX.'/'.$key)
             ->willReturn($visibility);
     }
 
     private function make_it_retrieve_raw_visibility_return_false($key)
     {
-        $this->client->getObjectAcl($this->bucket, self::PATH_PREFIX . '/' . $key)
+        $this->client->getObjectAcl($this->bucket, self::PATH_PREFIX.'/'.$key)
             ->willThrow(returnOssException('RequestTimeout'));
     }
 
@@ -544,20 +554,20 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $key = 'key.txt';
 
-        $this->client->getObjectMeta($this->bucket, self::PATH_PREFIX . '/' . $key)
+        $this->client->getObjectMeta($this->bucket, self::PATH_PREFIX.'/'.$key)
             ->willReturn([
-                'oss-request-id'     => 'xxxxx',
-                'oss-request-url'    => 'xxxxx',
-                'oss-redirects'      => 'xxxxx',
-                'oss-stringtosign'   => 'xxxxx',
+                'oss-request-id' => 'xxxxx',
+                'oss-request-url' => 'xxxxx',
+                'oss-redirects' => 'xxxxx',
+                'oss-stringtosign' => 'xxxxx',
                 'oss-requestheaders' => 'xxxxx',
-                'content-length'     => 12789,
-                'last-modified'      => 'Fri, 24 Feb 2012 06:07:48 GMT',
-                'date'               => 'Wed, 29 Apr 2015 05:21:12 GMT',
-                'eTag'               => '5B3C1A2E053D763E1B002CC607C5A0FE',
-                'connection'         => 'keep-alive',
-                'server'             => 'aliyunoss',
-                'info'              => [
+                'content-length' => 12789,
+                'last-modified' => 'Fri, 24 Feb 2012 06:07:48 GMT',
+                'date' => 'Wed, 29 Apr 2015 05:21:12 GMT',
+                'eTag' => '5B3C1A2E053D763E1B002CC607C5A0FE',
+                'connection' => 'keep-alive',
+                'server' => 'aliyunoss',
+                'info' => [
                     'content_type' => 'text/plain',
                 ],
             ]);
@@ -569,7 +579,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $key = 'key.txt';
 
-        $this->client->getObjectMeta($this->bucket, self::PATH_PREFIX . '/' . $key)
+        $this->client->getObjectMeta($this->bucket, self::PATH_PREFIX.'/'.$key)
             ->willThrow(returnOssException('NoSuchKey', 404));
 
         $this->{$method}($key)->shouldBe(false);
@@ -580,10 +590,10 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $key = 'key.txt';
         $returnContents = 'contents string';
         if (is_scalar($contents)) {
-            $this->client->getObject($this->bucket, self::PATH_PREFIX . '/' . $key)
+            $this->client->getObject($this->bucket, self::PATH_PREFIX.'/'.$key)
                 ->willReturn($returnContents);
         } else {
-            $this->client->signUrl($this->bucket, self::PATH_PREFIX . '/' . $key, 60, OssClient::OSS_HTTP_GET, Argument::type('array'))
+            $this->client->signUrl($this->bucket, self::PATH_PREFIX.'/'.$key, 60, OssClient::OSS_HTTP_GET, Argument::type('array'))
                 ->willReturn('http://www.baidu.com');
         }
 
@@ -594,10 +604,10 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     {
         $key = 'key.txt';
         if (is_scalar($contents)) {
-            $this->client->getObject($this->bucket, self::PATH_PREFIX . '/' . $key)
+            $this->client->getObject($this->bucket, self::PATH_PREFIX.'/'.$key)
                 ->willThrow(returnOssException('NoSuchKey', 404));
         } else {
-            $this->client->signUrl($this->bucket, self::PATH_PREFIX . '/' . $key, 60, OssClient::OSS_HTTP_GET, Argument::type('array'))
+            $this->client->signUrl($this->bucket, self::PATH_PREFIX.'/'.$key, 60, OssClient::OSS_HTTP_GET, Argument::type('array'))
                 ->willThrow(returnOssException('NoSuchKey', 404));
         }
 
@@ -607,7 +617,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
     public function getMatchers()
     {
         return [
-            'haveKey'   => function ($subject, $key) {
+            'haveKey' => function ($subject, $key) {
                 return array_key_exists($key, $subject);
             },
             'haveValue' => function ($subject, $value) {
@@ -618,11 +628,11 @@ class AliyunOssAdapterSpec extends ObjectBehavior
 
     private function make_it_404_on_has_object($key)
     {
-        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX . '/' . $key, Argument::type('array'))
+        $this->client->doesObjectExist($this->bucket, self::PATH_PREFIX.'/'.$key, Argument::type('array'))
             ->willReturn(false);
 
         $result = new ObjectListInfo($this->bucket,
-            self::PATH_PREFIX . '/',
+            self::PATH_PREFIX.'/',
             '',
             OssUtil::decodeKey('', ''),
             1,
@@ -631,25 +641,24 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             [],
             []);
         $this->client->listObjects($this->bucket, [
-            OssClient::OSS_PREFIX   => self::PATH_PREFIX . '/' . $key . '/',
+            OssClient::OSS_PREFIX => self::PATH_PREFIX.'/'.$key.'/',
             OssClient::OSS_MAX_KEYS => 1,
         ])->willReturn($result);
     }
-    
+
     private function make_it_404_on_get_metadata($key)
     {
-        $this->client->getObjectMeta($this->bucket, self::PATH_PREFIX . '/' . $key)
+        $this->client->getObjectMeta($this->bucket, self::PATH_PREFIX.'/'.$key)
             ->willThrow(returnOssException('', 404));
     }
 }
 
-
 function returnOssException($code, $httpStatus = 200, $message = '', $requestId = '')
 {
     return new OssException([
-        'status'     => $httpStatus,
-        'code'       => $code,
-        'message'    => $message,
+        'status' => $httpStatus,
+        'code' => $code,
+        'message' => $message,
         'request-id' => $requestId,
     ]);
 }

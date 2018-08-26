@@ -9,6 +9,13 @@
 
 This is a Flysystem adapter for the Aliyun Oss SDK v2.*
 
+## Requirement
+
+- PHP >= 5.5.9
+- Composer
+- Openssl Extension
+- cURL Extension
+
 ## Installing
 
 ```shell

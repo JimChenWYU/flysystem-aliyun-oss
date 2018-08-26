@@ -43,7 +43,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             Argument::type('array')
         )->willThrow(returnOssException('RequestTimeout'));
 
-        $this->write($key, 'contents', new Config())->shouldBe(false);
+        $this->write($key, 'contents', new Config([OssClient::OSS_CALLBACK => true]))->shouldBe(false);
     }
 
     public function it_should_get_list_contents()

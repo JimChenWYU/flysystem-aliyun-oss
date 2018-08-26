@@ -1,20 +1,22 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: lenovo
- * Date: 8/23/2018
- * Time: 10:02 AM
+
+/*
+ * This file is part of the jimchen/flysystem-aliyun-oss.
+ *
+ * (c) JimChen <18219111672@163.com>
+ *
+ * This source file is subject to the MIT license that is bundled.
  */
 
 namespace JimChen\Flysystem\AliyunOss;
 
-use OSS\OssClient;
 use GuzzleHttp\Psr7;
-use League\Flysystem\Util;
-use OSS\Core\OssException;
-use League\Flysystem\Config;
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Adapter\CanOverwriteFiles;
+use League\Flysystem\Config;
+use League\Flysystem\Util;
+use OSS\Core\OssException;
+use OSS\OssClient;
 
 class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
 {
@@ -84,7 +86,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
      *
      * @param string $path
      * @param string $contents
-     * @param Config $config Config object
+     * @param Config $config   Config object
      *
      * @return array
      */
@@ -98,7 +100,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
      *
      * @param string $path
      * @param string $contents
-     * @param Config $config Config object
+     * @param Config $config   Config object
      *
      * @return array
      */
@@ -112,7 +114,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
      *
      * @param string   $path
      * @param resource $resource
-     * @param Config   $config Config object
+     * @param Config   $config   Config object
      *
      * @return array|false false on failure file meta data on success
      */
@@ -126,7 +128,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
      *
      * @param string   $path
      * @param resource $resource
-     * @param Config   $config Config object
+     * @param Config   $config   Config object
      *
      * @return array|false false on failure file meta data on success
      */
@@ -320,11 +322,11 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
      */
     public function listContents($directory = '', $recursive = false)
     {
-        $prefix = $this->applyPathPrefix(rtrim($directory, '/') . '/');
+        $prefix = $this->applyPathPrefix(rtrim($directory, '/').'/');
 
         $options = [
-            OssClient::OSS_PREFIX   => ltrim($prefix, '/'),
-            OssClient::OSS_MARKER   => '',
+            OssClient::OSS_PREFIX => ltrim($prefix, '/'),
+            OssClient::OSS_MARKER => '',
             OssClient::OSS_MAX_KEYS => 100,
         ];
 
@@ -350,6 +352,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
      * @param array $options
      *
      * @return array
+     *
      * @throws OssException
      */
     protected function retrieveListing(array $options)
@@ -359,11 +362,11 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
 
         foreach ($result->getObjectList() as $object) {
             $listing[] = [
-                'key'           => $object->getKey(),
+                'key' => $object->getKey(),
                 'last_modified' => $object->getLastModified(),
-                'etag'          => $object->getETag(),
-                'type'          => $object->getType(),
-                'size'          => $object->getSize(),
+                'etag' => $object->getETag(),
+                'type' => $object->getType(),
+                'size' => $object->getSize(),
                 'storage_class' => $object->getStorageClass(),
             ];
         }
@@ -500,7 +503,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
         try {
             return $this->ossClient->getObjectMeta($this->bucket, $this->applyPathPrefix($path));
         } catch (OssException $e) {
-            if ($e->getHTTPStatus() === 404) {
+            if (404 === $e->getHTTPStatus()) {
                 return false;
             }
 
@@ -516,6 +519,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
      * @param Config          $config
      *
      * @return array|false
+     *
      * @throws \InvalidArgumentException
      */
     protected function upload($path, $body, Config $config)
@@ -549,7 +553,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
     {
         $options = $this->options;
 
-        foreach ((array)$keys as $key) {
+        foreach ((array) $keys as $key) {
             if ($value = $config->get($key)) {
                 $options[$key] = $value;
             }
@@ -576,7 +580,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
 
         $result = array_merge($result, Util::pathinfo($result['path']));
 
-        if (substr($result['path'], -1) === '/') {
+        if ('/' === substr($result['path'], -1)) {
             $result['type'] = 'dir';
             $result['path'] = rtrim($result['path'], '/');
 
@@ -599,13 +603,13 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
         // Do a prefix listing of objects to determine.
         try {
             $result = $this->ossClient->listObjects($this->bucket, [
-                OssClient::OSS_PREFIX   => rtrim($location, '/') . '/',
+                OssClient::OSS_PREFIX => rtrim($location, '/').'/',
                 OssClient::OSS_MAX_KEYS => 1,
             ]);
 
             return $result->getObjectList() || $result->getPrefixList();
         } catch (OssException $e) {
-            if ($e->getHTTPStatus() === 403) {
+            if (403 === $e->getHTTPStatus()) {
                 return false;
             }
 

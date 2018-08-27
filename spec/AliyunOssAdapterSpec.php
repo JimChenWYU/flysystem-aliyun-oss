@@ -126,7 +126,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
         $this->listContents('/', true);
     }
 
-    public function it_should_get_list_contents_return_false()
+    public function it_should_get_list_contents_throw_exception()
     {
         $this->client->listObjects($this->bucket, [
             OssClient::OSS_PREFIX => self::PATH_PREFIX.'/',
@@ -135,7 +135,7 @@ class AliyunOssAdapterSpec extends ObjectBehavior
             OssClient::OSS_MAX_KEYS => 100,
         ])->willThrow(returnOssException('RequestTimeout'));
 
-        $this->listContents('/', false)->shouldBe(false);
+        $this->shouldThrow(returnOssException('RequestTimeout'))->duringListContents('/', false);
     }
 
     public function it_should_add_path_prefix_without_left_directory_separator()

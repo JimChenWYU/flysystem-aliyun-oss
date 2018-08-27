@@ -336,11 +336,7 @@ class AliyunOssAdapter extends AbstractAdapter implements CanOverwriteFiles
             $options[OssClient::OSS_DELIMITER] = '/';
         }
 
-        try {
-            $listing = $this->retrieveListing($options);
-        } catch (OssException $e) {
-            return false;
-        }
+        $listing = $this->retrieveListing($options);
 
         $normalizer = [$this, 'normalizeResponse'];
         $normalized = array_map($normalizer, $listing);
